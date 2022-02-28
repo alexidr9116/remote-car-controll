@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../../middleware/auth');
-const request = require('request');
-const http = require('http');
+const axios = require('axios');
+
 const Device = require('../../models/device');
 router.post('/list/all',auth,async(req,res)=>{
     const list = await Device.find({});
@@ -33,26 +33,23 @@ router.post('/control/:cmd', auth, async(req,res)=>{
             id:device.deviceNumber,
         };
         const options = {
-            headers:{"Connection":"close"},
-            url:'http://8.218.12.18:8081/api/v4/mqtt/publish',
-            method:'post',
-            json:true,
-            body:data
+            auth:{
+                username:'admin',
+                password:'public'
+            }
         }
-        request(options,(err,response,data)=>{
-            if(!err && response.statusCode == 200){
-                console.log("fetched...",data);
-                return res.json({success:true,action:req.params.cmd,data});
+        axios.post("http://45.76.188.38:8081/api/v4/mqtt/publish",options,(err,{result})=>{
+            if(err){
+                console.log(err);
+                return res.json({success:false,action:req.params.cmd,err});                
             }
-            else if(err){
-                console.log("err...",err);
-                return res.json({success:false,action:req.params.cmd,err});
+            if(result){
+                console.log(result);
+                return res.json({success:false,action:req.params.cmd,err:result});
             }
-            else{
-                console.log("unknown...");
-                return res.json({success:false,action:req.params.cmd,err:"unknown error"});
-            }
-        });
+            
+        })
+
         
     }
     else{
