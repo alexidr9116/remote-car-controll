@@ -40,7 +40,7 @@ mongoose
   .then(() => console.log("MongoDB successfully connected"))
   .catch(err => console.log(err));
 
-const assetFolder  = path.resolve(__dirname, '../client/build/');
+const assetFolder  = path.resolve(__dirname, './client/build/');
 
 // Passport middleware
 app.use(passport.initialize());
