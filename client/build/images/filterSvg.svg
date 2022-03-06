@@ -1,9 +1,0 @@
-  
-  <filter id='inset-shadow'>
-  <feComposite
-    operator='in'
-    in='color'
-    in2='inverse'
-    result='shadow'
-  />
-  </filter>
